@@ -37,5 +37,4 @@ services:
       - "15672:15672"
       - "15692:15692"
     volumes:
-      - ./rabbitmq/data:/data
       - ./rabbitmq/enable_prometheus.sh:/docker-entrypoint-init.d/enable_prometheus.sh:ro
