@@ -6,7 +6,7 @@ services:
     image: gcr.io/datadoghq/agent:7
     container_name: dd-agent
     environment:
-      - DD_API_KEY=2f0973b0b9cba8dac554f263f46a0eba
+      - DD_API_KEY=
       - DD_SITE=us5.datadoghq.com
       - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true 
       - DD_LOGS_ENABLED=true
