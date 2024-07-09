@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+
+  dd-agent:
+    image: gcr.io/datadoghq/agent:7
+    container_name: dd-agent
+    environment:
+      - DD_API_KEY=2f0973b0b9cba8dac554f263f46a0eba
+      - DD_SITE=us5.datadoghq.com
+      - DD_LOGS_CONFIG_CONTAINER_COLLECT_ALL=true 
+      - DD_LOGS_ENABLED=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc/:/host/proc/:ro
+      - /sys/fs/cgroup/:/host/sys/fs/cgroup:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./dd/auto_conf.yaml:/etc/datadog-agent/conf.d/apache.d/auto_conf.yaml
+      - ./apache/logs:/var/log/apache2
+    labels:
+      com.datadoghq.ad.logs: '[{"source": "apache", "service": "apache"}]'
+
+
+  apache:
+    image: httpd:2.4.61
+    container_name: apache-server
+    ports:
+      - "80:80"
+    volumes:
+      - ./apache/httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./apache/logs:/var/log/apache2
+
+  rabbitmq:
+    image: rabbitmq:latest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      - "15692:15692"
+    volumes:
+      - ./rabbitmq/data:/data
+      - ./rabbitmq/enable_prometheus.sh:/docker-entrypoint-init.d/enable_prometheus.sh:ro
