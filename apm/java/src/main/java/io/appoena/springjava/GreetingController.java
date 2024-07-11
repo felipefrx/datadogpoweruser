@@ -22,7 +22,7 @@ public class GreetingController {
 	public Greeting greeting(@RequestParam(value = "name", defaultValue = "World") String name) {
 		try{
 			logger.info("Log from Java App");
-			URL url = new URL("http://python-flask:8082/api/dotnet");
+			URL url = new URL("http://python-flas.kdd-felipe:8082/api/dotnet");
 			HttpURLConnection con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("GET");
 			logger.info("Response: {}",con.getResponseMessage());
