@@ -33,7 +33,7 @@ def rest_hello_world():
 @app.route('/api/dotnet')
 def rest_external():
     log.info('Calling external API')
-    return requests.get('http://dotnet-todoapi:8081/api/todoitems').text
+    return requests.get('http://dotnet-todoapi.dd-felipe:8081/api/todoitems').text
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0')
