@@ -2,6 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dotnet-todoapi
+  labels:
+    tags.datadoghq.com/env: dev
+    tags.datadoghq.com/service: dotnet
+    tags.datadoghq.com/version: 0.0.1
 spec:
   selector:
     matchLabels:
@@ -10,14 +14,22 @@ spec:
     metadata:
       labels:
         app: dotnet-todoapi
+        tags.datadoghq.com/env: dev
+        tags.datadoghq.com/service: dotnet
+        tags.datadoghq.com/version: 0.0.1
+        admission.datadoghq.com/enabled: "true"
+      annotations:
+        admission.datadoghq.com/dotnet-lib.version: v2.53.0
     spec:
       containers:
       - name: dotnet-todoapi
-        image: dotnet-todoapi
-        imagePullPolicy: Never
+        image: felipefrx/dd:dotnet
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
-        env: []
+        env: 
+          - name: DD_LOGS_INJECTION
+            value: "true"
         resources:
           requests:
             cpu: 200m
@@ -31,7 +43,7 @@ kind: Service
 metadata:
   name: dotnet-todoapi
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: dotnet-todoapi
   ports:
