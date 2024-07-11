@@ -2,6 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: python-flask
+  labels:
+    tags.datadoghq.com/env: dev
+    tags.datadoghq.com/service: python
+    tags.datadoghq.com/version: 0.0.1
 spec:
   selector:
     matchLabels:
@@ -10,14 +14,22 @@ spec:
     metadata:
       labels:
         app: python-flask
+        tags.datadoghq.com/env: dev
+        tags.datadoghq.com/service: python
+        tags.datadoghq.com/version: 0.0.1
+        admission.datadoghq.com/enabled: "true"
+      annotations:
+        admission.datadoghq.com/python-lib.version: v2.9.1
     spec:
       containers:
       - name: python-flask
-        image: python-flask
-        imagePullPolicy: Never
+        image: felipefrx/dd:python
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
-        env: []
+        env:
+          - name: DD_LOGS_INJECTION
+            value: "true"
         resources:
           requests:
             cpu: 200m
@@ -31,7 +43,7 @@ kind: Service
 metadata:
   name: python-flask
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: python-flask
   ports:
