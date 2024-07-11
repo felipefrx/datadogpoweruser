@@ -2,6 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: java-spring
+  labels:
+    tags.datadoghq.com/env: dev
+    tags.datadoghq.com/service: java
+    tags.datadoghq.com/version: 0.0.1
 spec:
   selector:
     matchLabels:
@@ -10,14 +14,22 @@ spec:
     metadata:
       labels:
         app: java-spring
+        tags.datadoghq.com/env: dev
+        tags.datadoghq.com/service: java
+        tags.datadoghq.com/version: 0.0.1
+        admission.datadoghq.com/enabled: "true"
+      annotations:
+        admission.datadoghq.com/java-lib.version: v1.37.0
     spec:
       containers:
       - name: java-spring
-        image: java-spring
-        imagePullPolicy: Never
+        image: felipefrx/dd:java
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
-        env: []
+        env:
+          - name: DD_LOGS_INJECTION
+            value: "true"
         resources:
           requests:
             cpu: 200m
@@ -31,7 +43,7 @@ kind: Service
 metadata:
   name: java-spring
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: java-spring
   ports:
